@@ -1,123 +1,192 @@
-"set lines=20
+set nocompatible " be iMproved
+  
+" Vundle Setup Type Things {{{
+" ----------------------------
+if !empty(glob("/home/rod/.vim/bundle")) "Check for Vundle Direcory
+   echo "File exists."
+   echo "need to load things for vundle"
+    filetype off      " required
 
+    " set the runtime path to include Vundle and initialize
+    set rtp+=~/.vim/bundle/Vundle.vim
+    call vundle#begin()
+    " alternatively, pass a path where Vundle should install plugins
+    "call vundle#begin('~/some/path/here')
+
+    " let Vundle manage Vundle, required
+    Plugin 'gmarik/Vundle.vim'
+
+    " The following are examples of different formats supported.
+    " Keep Plugin commands between vundle#begin/end.
+    " plugin on GitHub repo
+    " Plugin 'tpope/vim-fugitive'
+
+    " plugin from http://vim-scripts.org/vim/scripts.html
+    " Plugin 'L9'
+
+    " Git plugin not hosted on GitHub
+    Plugin 'git://git.wincent.com/command-t.git'
+
+    " git repos on your local machine (i.e. when working on your own plugin)
+    Plugin 'file:///home/gmarik/path/to/plugin'
+
+    " The sparkup vim script is in a subdirectory of this repo called vim.
+    " Pass the path to set the runtimepath properly.
+    Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
+
+    " Avoid a name conflict with L9
+    Plugin 'user/L9', {'name': 'newL9'}
+
+    Plugin 'Align'  
+    Plugin 'Tabular'
+    echo "Load Tabular"
+    Plugin 'snipMate'
+
+    " All of your Plugins must be added before the following line
+    call vundle#end()            " required
+        
+    filetype plugin indent on    " required
+
+    " To ignore plugin indent changes, instead use:
+    "filetype plugin on
+    "
+    " Brief help
+    " :PluginList          - list configured plugins
+    " :PluginInstall(!)    - install (update) plugins
+    " :PluginSearch(!) foo - search (or refresh cache first) for foo
+    " :PluginClean(!)      - confirm (or auto-approve) removal of unused plugins
+    "
+    " see :h vundle for more details or wiki for FAQ
+    " Put your non-Plugin stuff after this line
+endif
+"}}} 
 filetype plugin indent on
-" show existing tab with 4 spaces width
-set tabstop=4
-" when indenting with '>', use 4 spaces width
-set shiftwidth=4
-" On pressing tab, insert 4 spaces
+
+" Backups {{{
+" -----------
+set backup
+if has("win32")
+  "Windows options here
+  set directory=./backup,~/tmp/vim//
+  set backupdir=./backup,~/tmp/vim//
+else
+   "unix   
+  set backupdir=~/.vim/backup
+  set directory=~/.vim/tmp
+    if has("unix")
+       let s:uname = system("uname")
+    endif
+endif
+set writebackup 
+"}}}
+
+" Language & encoding{{{
+" ----------------------
+set encoding=utf-8
+set fileencodings=utf-8,latin-1
+"}}}
+
+" Text Format {{{
+" ---------------
+set tabstop=2
+set backspace=2   " Delete everything with backspace
+set shiftwidth=2  " Tabs under smart indent
+set softtabstop=2 " backspace can delete 2 space a time
+set autoindent
+set smartindent
+set smarttab
 set expandtab
+"}}}
 
-set softtabstop=4
+" View Setup {{{
+" ---------------
+colorscheme morning
 set laststatus=2
-"set columns=80
-
-set nocompatible
-syntax on
-filetype plugin indent on
-set hidden
-
-"source $VIMRUNTIME/vimrc_example.vim
-"source $VIMRUNTIME/mswin.vim
-"behave mswin
-colorscheme darkblue
-"set guifont=Courier_new:h14:cANSI
+set showcmd    " display incomplete commands
+set ruler      " show the cursor position all the time
 set visualbell
+set history=90 " keep 50 lines of command line history
+set incsearch  " do incremental searching
+syntax on
+"set guifont=Courier_new:h14:cANSI
 set relativenumber "number the lines
+" allow backspacing over everything in insert mode
+set backspace=indent,eol,start
+set hidden     " hidden buffers
 set ignorecase
-set virtualedit+=block
+set virtualedit+=block   "allows going beyond EOL
 setlocal spell
 set nospell
-set backup
-set writebackup 
-set directory=./backup,~/tmp/vim//
-set backupdir=./backup,~/tmp/vim//
+" print header
 set pheader=%<%f%h%m%40{strftime(\"%I:%M:%S\ \%p,\ %a\ %b\ %d,\ %Y\")}%=Page\ %N
-
 set diffexpr=MyDiff()
-"set cmdheight=2
+" make and restore view so that folds are saved
+au BufWinLeave *.* mkview
+au BufWinEnter *.* silent loadview
+"}}}
 
-"noremap <F4> :w <CR>:!awk -f  % *.txt<CR>
+
+
+
+" Mappings {{{
+" ---------------
+" run / check perl code 
 noremap <F5> :w <CR>:!perl  %<CR>
 noremap <F6> :w <CR>:!perl -c %<CR>
+
 " Execute current file
-nnoremap <F7> :call ExecuteFile()<CR>
 noremap <F8> <Esc> :w <CR>:!sqlite3 test_frame06.sqlite < %<CR>
 noremap / /\v/V<Left><Left>
 
+"invert line number settings
+nmap <leader>ii :set invrelativenumber<CR>
+nmap <leader>nn :set invnumber<CR>
 
 "other maps to geting an Esc
-inoremap ;; <Esc>l
-"inoremap jk <Esc>l
+inoremap kj <Esc>l            
+inoremap jk <Esc>l
+inoremap <C-k> <Esc>l
+inoremap <A-k> <Esc>j
+inoremap <A k> <Esc>j
 
-" insert a  tab  with  \<tab>
 " to insert a real <Tab>  type  "\<tab>" quickly
-inoremap <Leader><Tab> <Tab>
-" ^ mark=location at last insert stop
-" is au VimEnter not use other mappings seem to interfear 
-"au VimEnter * inoremap <Tab> <Esc>`^
-"au VimEnter * vnoremap <Tab> <Esc>`^
+inoremap <Leader><Tab> <Tab>   
 noremap ;; :%s:\v::g<Left><Left><Left>
 vnoremap ;; :s:\v::g<Left><Left><Left>
 
+"edit or source the $MYVIMRC
 noremap <leader>ev :split $MYVIMRC<CR>
 noremap <leader>sv :source $MYVIMRC<CR>
-" clear the search registar
-noremap <leader>c  :let @/ = ""<CR>
-nmap <leader>ss  i<CR><BS><BS>skip<Tab>
-imap <leader>ss  <CR><BS><BS>skip<Tab>
-noremap <leader>gt <Esc>qaq:g//:y A<CR> :tabnew<CR>"Ap<CR>
+"global lines to new tab
+noremap <leader>gt <Esc>qaq:g//:y A<CR> :tabnew<CR>"Ap<CR>  
 
+" clear the search registar
+noremap <leader>c  :let @/ = ""<CR>     
+nmap <leader>ss  i<CR><BS><BS>skip<Tab> 
+imap <leader>ss  <CR><BS><BS>skip<Tab>
 " comment/uncomment blocks of code (in vmode)
 vmap _c :s/^/#/gi<Enter> :let @/ = ""<CR>
 vmap _C :s/^#//gi<Enter> :let @/ = ""<CR>
+"}}}
 
+" Perl {{{
+" ---------------
 " my perl includes pod
 let perl_include_pod = 1
-
 " syntax color complex things like @{${"foo"}}
 let perl_extended_vars = 1
-
 " Tidy selected lines (or entire file) with _t:
 nnoremap  _t :%!perltidy -q<Enter>
 vnoremap  _t :!perltidy -q<Enter>
+"}}}
 
 
 :highlight TablineSel cterm=reverse
 :highlight TablineFill none
-" make and restore view so that folds are saved
-au BufWinLeave *.* mkview
-au BufWinEnter *.* silent loadview
 
 
 " An example for a vimrc file.
-"
-" Maintainer:	Bram Moolenaar <Bram@vim.org> Last change:	2008 Jul 02
-"
-" To use it, copy it to for Unix and OS/2:  ~/.vimrc for Amiga:  s:.vimrc for
-" MS-DOS and Win32:  $VIM\_vimrc for OpenVMS:  sys$login:.vimrc
-"
-" When started as "evim", evim.vim will already have done these settings.
-if v:progname =~? "evim"
-  finish 
-endif
-
-" allow backspacing over everything in insert mode
-set backspace=indent,eol,start
-
-"if has("vms")
-"    set nobackup		" do not keep a backup file, use versions instead 
-"  else 
-"    set backup		" keep a backup file
-"endif 
-
-set history=90		" keep 50 lines of command line history 
-set ruler		" show the cursor position all the time 
-set showcmd             " display incomplete commands 
-set incsearch	        " do incremental searching
-"set lines=50
-
-
+" Maintainer:   Bram Moolenaar <Bram@vim.org> Last change:  2008 Jul 02
 " CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo, so
 " that you can undo CTRL-U after inserting a line break.
 inoremap <C-U> <C-G>u<C-U>
@@ -127,19 +196,13 @@ if has('mouse')
   set mouse=a 
 endif
 
-" Switch syntax highlighting on, when the terminal has colors Also switch on
-" highlighting the last used search pattern.
-if &t_Co > 2 || has("gui_running")
-"   syntax on 
-   set hlsearch 
-endif
-
 " Only do this part when compiled with support for autocommands.
 if has("autocmd")
   " Enable file type detection.  Use the default filetype settings, so that
   " mail gets 'tw' set to 72, 'cindent' is on in C files, etc.  Also load
   " indent files, to automatically do language-dependent indenting.
   filetype plugin indent on
+  
   " Put these in an autocmd group, so that we can delete them easily.
   augroup vimrcEx 
   au!
@@ -163,44 +226,19 @@ if has("autocmd")
 
   augroup END
 else
-  set autoindent		" always set autoindenting on
+  set autoindent        " always set autoindenting on
 endif " has("autocmd")
 
 " Convenient command to see the difference between the current buffer and the
 " file it was loaded from, thus the changes you made.  Only define it when not
 " defined already.
 if !exists(":DiffOrig") 
-  command DiffOrig vert new | set bt=nofile | r # | 0d_	| diffthis 
+  command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis 
                             \ | wincmd p | diffthis 
 endif
 
-
-"set diffexpr=MyDiff()
-"function MyDiff()
-"  let opt = '-a --binary '
-"  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
-"  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
-"  let arg1 = v:fname_in
-"  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
-"  let arg2 = v:fname_new
-"  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
-"  let arg3 = v:fname_out
-"  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
-"  let eq = ''
-"  if $VIMRUNTIME =~ ' '
-"    if &sh =~ '\<cmd'
-"      let cmd = '""' . $VIMRUNTIME . '\diff"'
-"      let eq = '"'
-"    else
-"      let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
-"    endif
-"  else
-"    let cmd = $VIMRUNTIME . '\diff'
-"  endif
-"  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
-"endfunction
-
-
+" TabMessage {{{
+" --------------
 command! -nargs=+ -complete=command TabMessage call TabMessage(<q-args>)
 function! TabMessage(cmd)
   redir => message
@@ -210,10 +248,10 @@ function! TabMessage(cmd)
   silent put=message
   set nomodified
 endfunction
+"}}}
 
-
-
-
+" JoinTab {{{
+" -----------
 "by RMH June 7, 2011 
 "by RMH Jan 22, 2013 added check for one line call
 "use V-line block to highlight lines then this will
@@ -221,7 +259,7 @@ endfunction
 command! -range JoinTab <line1>,<line2>call Jointabrmh()
 function! Jointabrmh() range
     if a:firstline==a:lastline
-	return
+    return
     endif
     let alist=getline(a:firstline,a:lastline)
     let blist=join(alist,"\t")
@@ -229,9 +267,10 @@ function! Jointabrmh() range
     call setline(a:firstline,blist)
     return (a:lastline)
 endfunction    
+"}}}
 
-
-
+" CopyMatches {{{
+" ----------------------------
 " Copy matches of the last search to a register (default is the clipboard).
 " Accepts a range (default is whole file).
 " 'CopyMatches'   copy matches to clipboard (each match has \n added).
@@ -248,9 +287,9 @@ function! s:CopyMatches(line1, line2, reg)
     while idx >= 0
       let end = matchend(txt, @/, idx)
       if end > idx
-	call add(hits, strpart(txt, idx, end-idx))
+    call add(hits, strpart(txt, idx, end-idx))
       else
-	let end += 1
+    let end += 1
       endif
       if @/[0] == '^'
         break  " to avoid false hits
@@ -265,9 +304,7 @@ function! s:CopyMatches(line1, line2, reg)
     echo 'No hits'
   endif
 endfunction
-
-" first, enable status line always
-set laststatus=2
+"}}}
 
 " now set it up to change the status line based on mode
 if version >= 700
