@@ -102,20 +102,20 @@ set expandtab
 " ---------------
 colorscheme morning
 set laststatus=2
-set showcmd    " display incomplete commands
-set ruler      " show the cursor position all the time
-set visualbell
-set history=90 " keep 50 lines of command line history
-set hlsearch     " highlight all match of seach reg
-set incsearch  " do incremental searching
+set showcmd                                         " display incomplete commands
+set ruler                                           " show the cursor position all the time
+set visualbell                                      " ruler
+set history=90                                      " keep 50 lines of command line history
+set hlsearch                                        " highlight all match of seach reg
+set incsearch                                       " do incremental searching
 syntax on
 "set guifont=Courier_new:h14:cANSI
-set relativenumber "number the lines
+set relativenumber                                  " number the lines
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
-set hidden     " hidden buffers
+set hidden                                          " hidden buffers
 set ignorecase
-set virtualedit+=block   "allows going beyond EOL
+set virtualedit+=block                              " allows going beyond EOL
 setlocal spell
 set nospell
 " print header
