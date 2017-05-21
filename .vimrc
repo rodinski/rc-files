@@ -106,6 +106,7 @@ set showcmd    " display incomplete commands
 set ruler      " show the cursor position all the time
 set visualbell
 set history=90 " keep 50 lines of command line history
+set hlsearch     " highlight all match of seach reg
 set incsearch  " do incremental searching
 syntax on
 "set guifont=Courier_new:h14:cANSI
