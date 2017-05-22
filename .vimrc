@@ -146,14 +146,15 @@ nmap <leader>nn :set invnumber<CR>
 "other maps to geting an Esc
 inoremap kj <Esc>l            
 inoremap jk <Esc>l
-inoremap <C-k> <Esc>l
-inoremap <A-k> <Esc>j
-inoremap <A k> <Esc>j
+" Alt  is has a :help "key-notation" <M-?>
+inoremap <M-m> <Esc>l
 
 " to insert a real <Tab>  type  "\<tab>" quickly
 inoremap <Leader><Tab> <Tab>   
 noremap ;; :%s:\v::g<Left><Left><Left>
 vnoremap ;; :s:\v::g<Left><Left><Left>
+
+
 
 "edit or source the $MYVIMRC
 noremap <leader>ev :split $MYVIMRC<CR>
