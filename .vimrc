@@ -1,4 +1,4 @@
-set nocompatible " be iMproved"{{{
+set nocompatible " be iMproved"
   
 " Vundle Setup Type Things {{{
 " ----------------------------
@@ -88,14 +88,15 @@ set fileencodings=utf-8,latin-1
 
 " Text Format {{{
 " ---------------
-set tabstop=2
-set backspace=2   " Delete everything with backspace
-set shiftwidth=2  " Tabs under smart indent
-set softtabstop=2 " backspace can delete 2 space a time
+set tabstop=4
+set softtabstop=4 " backspace can delete 2 space a time
+set shiftwidth=4  " Tabs under smart indent
+set smarttab
+"
 set autoindent
 set smartindent
-set smarttab
 set expandtab
+set backspace=2   " Delete everything with backspace
 "}}}
 
 " View Setup {{{
@@ -110,7 +111,7 @@ set hlsearch                                        " highlight all match of sea
 set incsearch                                       " do incremental searching
 syntax on
 "set guifont=Courier_new:h14:cANSI
-set relativenumber                                  " number the lines
+set number                                  " number the lines
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 set hidden                                          " hidden buffers
@@ -207,7 +208,7 @@ if has("autocmd")
   " For all text files set 'textwidth' to 78 characters.
   autocmd FileType text setlocal textwidth=78
   autocmd FileType perl setlocal sts=4
-  autocmd FileType yaml setlocal sts=2 sw=2 nosmartindent nocindent indentkeys-=<:> expandtab 
+  autocmd FileType yaml setlocal ts=2 sts=2 sw=2 nosmartindent nocindent indentkeys-=<:> expandtab 
   autocmd FileType yaml inoremap ` <c-r>=TriggerSnippet()<cr>
   autocmd FileType yaml snoremap ~ <esc>i<right><c-r>=TriggerSnippet()<cr>
     
