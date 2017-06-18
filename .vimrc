@@ -1,4 +1,4 @@
-set nocompatible " be iMproved
+set nocompatible " be iMproved"
   
 " Vundle Setup Type Things {{{
 " ----------------------------
@@ -88,34 +88,35 @@ set fileencodings=utf-8,latin-1
 
 " Text Format {{{
 " ---------------
-set tabstop=2
-set backspace=2   " Delete everything with backspace
-set shiftwidth=2  " Tabs under smart indent
-set softtabstop=2 " backspace can delete 2 space a time
+set tabstop=4
+set softtabstop=4 " backspace can delete 2 space a time
+set shiftwidth=4  " Tabs under smart indent
+set smarttab
+"
 set autoindent
 set smartindent
-set smarttab
 set expandtab
+set backspace=2   " Delete everything with backspace
 "}}}
 
 " View Setup {{{
 " ---------------
 colorscheme morning
 set laststatus=2
-set showcmd    " display incomplete commands
-set ruler      " show the cursor position all the time
-set visualbell
-set history=90 " keep 50 lines of command line history
-set hlsearch     " highlight all match of seach reg
-set incsearch  " do incremental searching
+set showcmd                                         " display incomplete commands
+set ruler                                           " show the cursor position all the time
+set visualbell                                      " ruler
+set history=90                                      " keep 50 lines of command line history
+set hlsearch                                        " highlight all match of seach reg
+set incsearch                                       " do incremental searching
 syntax on
 "set guifont=Courier_new:h14:cANSI
-set relativenumber "number the lines
+set number                                  " number the lines
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
-set hidden     " hidden buffers
+set hidden                                          " hidden buffers
 set ignorecase
-set virtualedit+=block   "allows going beyond EOL
+set virtualedit+=block                              " allows going beyond EOL
 setlocal spell
 set nospell
 " print header
@@ -125,9 +126,6 @@ set diffexpr=MyDiff()
 au BufWinLeave *.* mkview
 au BufWinEnter *.* silent loadview
 "}}}
-
-
-
 
 " Mappings {{{
 " ---------------
@@ -211,7 +209,7 @@ if has("autocmd")
   " For all text files set 'textwidth' to 78 characters.
   autocmd FileType text setlocal textwidth=78
   autocmd FileType perl setlocal sts=4
-  autocmd FileType yaml setlocal sts=2 sw=2 nosmartindent nocindent indentkeys-=<:> expandtab 
+  autocmd FileType yaml setlocal ts=2 sts=2 sw=2 nosmartindent nocindent indentkeys-=<:> expandtab 
   autocmd FileType yaml inoremap ` <c-r>=TriggerSnippet()<cr>
   autocmd FileType yaml snoremap ~ <esc>i<right><c-r>=TriggerSnippet()<cr>
     
@@ -271,49 +269,8 @@ function! Jointabrmh() range
 endfunction    
 "}}}
 
-" CopyMatches {{{
-" ----------------------------
-" Copy matches of the last search to a register (default is the clipboard).
-" Accepts a range (default is whole file).
-" 'CopyMatches'   copy matches to clipboard (each match has \n added).
-" 'CopyMatches x' copy matches to register x (clears register first).
-" 'CopyMatches X' append matches to register x.
-" We skip empty hits to ensure patterns using '\ze' don't loop forever.
-command! -range=% -register CopyMatches call s:CopyMatches(<line1>, <line2>, '<reg>')
-
-function! s:CopyMatches(line1, line2, reg)
-  let hits = []
-  for line in range(a:line1, a:line2)
-    let txt = getline(line)
-    let idx = match(txt, @/)
-    while idx >= 0
-      let end = matchend(txt, @/, idx)
-      if end > idx
-    call add(hits, strpart(txt, idx, end-idx))
-      else
-    let end += 1
-      endif
-      if @/[0] == '^'
-        break  " to avoid false hits
-      endif
-      let idx = match(txt, @/, end)
-    endwhile
-  endfor
-  if len(hits) > 0
-    let reg = empty(a:reg) ? '+' : a:reg
-    execute 'let @'.reg.' = join(hits, "\n") . "\n"'
-  else
-    echo 'No hits'
-  endif
-endfunction
-"}}}
-
-" now set it up to change the status line based on mode
-if version >= 700
-  au InsertEnter * hi StatusLine term=reverse ctermbg=5 gui=undercurl guisp=Magenta
-  au InsertLeave * hi StatusLine term=reverse ctermfg=0 ctermbg=2 gui=bold,reverse
-endif
-
+" InsertStatuslineColor {{{
+" ---------------
 function! InsertStatuslineColor(mode)
   if a:mode == 'i'
     hi statusline guibg=magenta
@@ -323,6 +280,7 @@ function! InsertStatuslineColor(mode)
     hi statusline guibg=red
   endif
 endfunction
+"}}}
 
 au InsertEnter * call InsertStatuslineColor(v:insertmode)
 au InsertChange * call InsertStatuslineColor(v:insertmode)
@@ -353,6 +311,8 @@ function! ExecuteFile()
   call RunShellCommand(cmd." %s")
 endfunction
 
+" RunShellCommand "{{{
+" --------------------
 " Enter any shell command and have the output appear in a new buffer
 " For example, to word count the current file:
 "
@@ -378,7 +338,6 @@ function! RunShellCommand(cmdline)
   setlocal nomodifiable
   1
 endfunction
+"}}}
 
-
-
-au BufRead,BufNewFile *.ino,*.pde set filetype=cpp
+au BufRead,BufNewFile *.ino,*.pde set filetype=cpp"}}}
