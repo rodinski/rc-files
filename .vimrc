@@ -35,12 +35,16 @@ if !empty(glob("/home/rod/.vim/bundle")) "Check for Vundle Direcory
     Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 
     " Avoid a name conflict with L9
-    Plugin 'user/L9', {'name': 'newL9'}
+    "Plugin 'user/L9', {'name': 'newL9'}
 
     Plugin 'Align'  
     Plugin 'Tabular'
-    echo "Load Tabular"
     Plugin 'snipMate'
+    Plugin 'SQLUtilities'
+    Plugin 'dbext4rdb'
+    Plugin 'perldoc'
+    " open help on the keywork on cursor with K
+    Plugin 'PERLDOC2'
 
     " All of your Plugins must be added before the following line
     call vundle#end()            " required
@@ -114,14 +118,15 @@ syntax on
 set number                                  " number the lines
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
-set hidden                                          " hidden buffers
+set hidden                      " hidden buffers
 set ignorecase
-set virtualedit+=block                              " allows going beyond EOL
+set autochdir                   " change dir to the current buffer 
+set virtualedit+=block          " allows going beyond EOL
 setlocal spell
 set nospell
 " print header
 set pheader=%<%f%h%m%40{strftime(\"%I:%M:%S\ \%p,\ %a\ %b\ %d,\ %Y\")}%=Page\ %N
-set diffexpr=MyDiff()
+"set diffexpr=MyDiff()
 " make and restore view so that folds are saved
 au BufWinLeave *.* mkview
 au BufWinEnter *.* silent loadview
@@ -135,7 +140,7 @@ noremap <F6> :w <CR>:!perl -c %<CR>
 
 " Execute current file
 noremap <F8> <Esc> :w <CR>:!sqlite3 test_frame06.sqlite < %<CR>
-noremap / /\v/V<Left><Left>
+"noremap / /\v/V<Left><Left>
 
 "invert line number settings
 nmap <leader>ii :set invrelativenumber<CR>
@@ -144,14 +149,15 @@ nmap <leader>nn :set invnumber<CR>
 "other maps to geting an Esc
 inoremap kj <Esc>l            
 inoremap jk <Esc>l
+inoremap <Tab> <Esc>l
 inoremap <C-k> <Esc>l
 inoremap <A-k> <Esc>j
 inoremap <A k> <Esc>j
 
 " to insert a real <Tab>  type  "\<tab>" quickly
 inoremap <Leader><Tab> <Tab>   
-noremap ;; :%s:\v::g<Left><Left><Left>
-vnoremap ;; :s:\v::g<Left><Left><Left>
+noremap ;; :%s:::g<Left><Left><Left>
+vnoremap ;; :s:::g<Left><Left><Left>
 
 "edit or source the $MYVIMRC
 noremap <leader>ev :split $MYVIMRC<CR>
@@ -170,6 +176,7 @@ vmap _C :s/^#//gi<Enter> :let @/ = ""<CR>
 
 " Perl {{{
 " ---------------
+set tags+=~/.ptags
 " my perl includes pod
 let perl_include_pod = 1
 " syntax color complex things like @{${"foo"}}
@@ -207,12 +214,22 @@ if has("autocmd")
   au!
   " For all text files set 'textwidth' to 78 characters.
   autocmd FileType text setlocal textwidth=78
-  autocmd FileType perl setlocal sts=4
-  autocmd FileType yaml setlocal ts=2 sts=2 sw=2 nosmartindent nocindent indentkeys-=<:> expandtab 
+
+  autocmd FileType perl setlocal ts=4 sts=4 sw=2 smartindent expandtab
+
+  autocmd  FileType perl  setlocal sts=4 ts=4 smartindent cindent
+  autocmd  FileType perl  nnoremap <F5> :update<CR>:RunPerl<CR>
+  autocmd  FileType perl  inoremap <F5> <ESC>:update<CR>:RunPerl<CR>li
+  autocmd  FileType perl  vnoremap <F5> <Esc>:update<CR>:RunPerl<CR>gv
+  autocmd  FileType perl  noremap  <F6> :update<CR>:TestPerl<CR>
+  autocmd  FileType perl  inoremap <F6> <ESC>:update<CR>:TestPerl<CR>li
+  autocmd  FileType perl  vnoremap <F5> <Esc>:update<CR>:TestPerl<CR>gv
+
+  autocmd FileType yaml setlocal ts=2 sts=2 sw=2 nosmartindent nocindent indentkeys-=<:> expandtab
   autocmd FileType yaml inoremap ` <c-r>=TriggerSnippet()<cr>
   autocmd FileType yaml snoremap ~ <esc>i<right><c-r>=TriggerSnippet()<cr>
     
-  au FileType perl source /usr/share/vim/vim74/ftplugin/perl_doc.vim
+  "au FileType perl source /usr/share/vim/vim74/ftplugin/perl_doc.vim
 
   " When editing a file, always jump to the last known cursor position.  Don't
   " do it when the position is invalid or when inside an event handler
@@ -339,4 +356,44 @@ function! RunShellCommand(cmdline)
 endfunction
 "}}}
 
+" dbext {{{
+
+function! DBextPostResult(db_type, buf_nr)
+    "if a:db_type == 'SQLITE'
+        " Assuming the first column is an integer
+        " highlight it using the WarningMsg color
+        syn match logWarn '^\d\+'
+        syn match logWarn '\d\+ *$'
+        hi def link logWarn		WarningMsg
+    "endif
+endfunction
+
+let g:dbext_default_profile_sqlite = 'type=SQLITE:dbname=/usr/bin/sqlite3'
+let g:dbext_default_SQLITE_bin  = '/usr/bin/sqlite3'
+"}}}
 au BufRead,BufNewFile *.ino,*.pde set filetype=cpp"}}}
+
+let g:Perldoc_path='/home/rod/bin/perldoc/'
+
+function! RunCmd(cmd)
+    let fn = expand("%:p")
+    let ft = &l:filetype
+    botright copen
+    setlocal modifiable
+    %d _
+    silent execute "read !".a:cmd." ".fn
+    1d _
+    normal! G
+    if ft != ""
+      execute "setf ".ft
+    else
+      setlocal filetype=
+    endif
+    setlocal nomodifiable nomodified
+    wincmd p
+endfunction
+"=============================
+command! -nargs=1 Run     call RunCmd(<q-args>)
+command! RunPerl  call RunCmd("/home/rod/perl5/perlbrew/perls/perl-5.24.1/bin/perl -w")
+command! TestPerl call RunCmd("/home/rod/perl5/perlbrew/perls/perl-5.24.1/bin/perl -c -w")
+
