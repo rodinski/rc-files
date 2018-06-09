@@ -126,8 +126,18 @@ setlocal spell
 set nospell
 " print header
 set pheader=%<%f%h%m%40{strftime(\"%I:%M:%S\ \%p,\ %a\ %b\ %d,\ %Y\")}%=Page\ %N
-"set diffexpr=MyDiff()
+
+set diffexpr=MyDiff()
+function MyDiff()
+    let opt = ''
+    if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
+    if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
+    silent execute '!diff -a ' . opt . v:fname_in . ' ' . v:fname_new . ' > ' . v:fname_out
+endfunction
+
+
 " make and restore view so that folds are saved
+
 au BufWinLeave *.* mkview
 au BufWinEnter *.* silent loadview
 "}}}
@@ -140,7 +150,6 @@ noremap <F6> :w <CR>:!perl -c %<CR>
 
 " Execute current file
 noremap <F8> <Esc> :w <CR>:!sqlite3 test_frame06.sqlite < %<CR>
-"noremap / /\v/V<Left><Left>
 
 "invert line number settings
 nmap <leader>ii :set invrelativenumber<CR>
@@ -156,6 +165,14 @@ inoremap <A k> <Esc>j
 
 " to insert a real <Tab>  type  "\<tab>" quickly
 inoremap <Leader><Tab> <Tab>   
+noremap  ;; :%s:::g<Left><Left><Left>
+vnoremap ;; :s:::g<Left><Left><Left>
+" Alt  is has a :help "key-notation" <M-?>
+inoremap <M-m> <Esc>l
+
+" to insert a real <Tab>  type  "\<tab>" quickly
+inoremap <Leader><Tab> <Tab>   
+"
 noremap ;; :%s:::g<Left><Left><Left>
 vnoremap ;; :s:::g<Left><Left><Left>
 
@@ -396,4 +413,3 @@ endfunction
 command! -nargs=1 Run     call RunCmd(<q-args>)
 command! RunPerl  call RunCmd("/home/rod/perl5/perlbrew/perls/perl-5.24.1/bin/perl -w")
 command! TestPerl call RunCmd("/home/rod/perl5/perlbrew/perls/perl-5.24.1/bin/perl -c -w")
-
