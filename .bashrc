@@ -89,6 +89,7 @@ fi
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
+alias hg='history|grep $1'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
@@ -113,3 +114,16 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
+
+
+
+#perlbrew use perl-5.24.1
+# These 3 lines are mandatory.
+export PERLBREW_ROOT=/home/rod/perl5/perlbrew
+export PERLBREW_HOME=/tmp/.perlbrew
+source ${PERLBREW_ROOT}/etc/bashrc
+
+## Do stuff with 5.24.1
+perlbrew use 5.24.1
+
