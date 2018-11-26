@@ -101,6 +101,13 @@ set autoindent
 set smartindent
 set expandtab
 set backspace=2   " Delete everything with backspace
+set formatoptions+=c         " add comments
+set formatoptions+=r         " add comment leader
+set formatoptions+=q         " allow gq to format
+set formatoptions-=a         " not automatic paragraphs
+set formatoptions-=t         " not automatic linewrap at textwidth
+
+
 "}}}
 
 " View Setup {{{
@@ -128,7 +135,7 @@ set nospell
 set pheader=%<%f%h%m%40{strftime(\"%I:%M:%S\ \%p,\ %a\ %b\ %d,\ %Y\")}%=Page\ %N
 
 set diffexpr=MyDiff()
-function MyDiff()
+function! MyDiff()
     let opt = ''
     if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
     if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
@@ -321,7 +328,7 @@ au InsertLeave * hi statusline guibg=green
 
 " default the statusline to green when entering Vim
 hi statusline guibg=green
-set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [%p%%]\ [L=%l\ [C=%c]]\ [LEN=%L]\ [%{mode()}]
+set statusline=%F%m%r%h%w\ \ \|B=%n\ FORMAT=%{&ff}\ TYPE=%Y\ %p%%\ L=%l\ C=%v\%{mode()}\ Arg=%a
 
 
 """"""""""""""""""""""""""""""""
@@ -413,3 +420,22 @@ endfunction
 command! -nargs=1 Run     call RunCmd(<q-args>)
 command! RunPerl  call RunCmd("/home/rod/perl5/perlbrew/perls/perl-5.24.1/bin/perl -w")
 command! TestPerl call RunCmd("/home/rod/perl5/perlbrew/perls/perl-5.24.1/bin/perl -c -w")
+
+"Execute sheel commands, send output to a new vsplit window
+function! s:ExecuteInShell(command)
+  let command = join(map(split(a:command), 'expand(v:val)'))
+  let winnr = bufwinnr('^' . command . '$')
+  silent! execute  winnr < 0 ? 'botright vnew ' . fnameescape(command) : winnr . 'wincmd w'
+  setlocal buftype=nowrite bufhidden=wipe nobuflisted noswapfile nowrap number
+  echo 'Execute ' . command . '...'
+  silent! execute 'silent %!'. command
+  silent! execute 'resize '
+  silent! redraw
+  silent! execute 'au BufUnload <buffer> execute bufwinnr(' . bufnr('#') . ') . ''wincmd w'''
+  silent! execute 'nnoremap <silent> <buffer> <LocalLeader>r :call <SID>ExecuteInShell(''' . command . ''')<CR>'
+  echo 'Shell command ' . command . ' executed.'
+endfunction
+command! -complete=shellcmd -nargs=+ Shellv call s:ExecuteInShell(<q-args>)
+"usage    :Shell <commands>
+
+
