@@ -1,6 +1,6 @@
 alias hg='history | grep $1'
 
-alias wake='etherwake 78:ac:c0:b2:76:b7'
+alias wake='sudo etherwake 78:ac:c0:b2:76:b7'
 
 alias linksys='ssh -l root 10.0.0.54'
 
