@@ -37,7 +37,7 @@ if !empty(glob("/home/rod/.vim/bundle")) "Check for Vundle Direcory
     " Avoid a name conflict with L9
     "Plugin 'user/L9', {'name': 'newL9'}
 
-    Plugin 'Align'  
+    Plugin 'align'  
     Plugin 'Tabular'
     Plugin 'snipMate'
     Plugin 'SQLUtilities'
@@ -156,7 +156,7 @@ noremap <F5> :w <CR>:!perl  %<CR>
 noremap <F6> :w <CR>:!perl -c %<CR>
 
 " Execute current file
-noremap <F8> <Esc> :w <CR>:!sqlite3 test_frame06.sqlite < %<CR>
+noremap <F8> <Esc> :w <CR>:!sqlite3 pax_curb_vol.sqlite < %<CR>
 
 "invert line number settings
 nmap <leader>ii :set invrelativenumber<CR>
@@ -239,9 +239,11 @@ if has("autocmd")
   " For all text files set 'textwidth' to 78 characters.
   autocmd FileType text setlocal textwidth=78
 
-  autocmd FileType perl setlocal ts=4 sts=4 sw=2 smartindent expandtab
+  autocmd FileType perl setlocal ts=2 sts=4 sw=2 smartindent expandtab
+  autocmd FileType perl setlocal cindent
+"  autocmd FileType perl keywordprg=perldoc\ -T\ -f
+"  autocmd FileType perl  keywordprg=perldoc\ -f
 
-  autocmd  FileType perl  setlocal sts=4 ts=4 smartindent cindent
   autocmd  FileType perl  nnoremap <F5> :update<CR>:RunPerl<CR>
   autocmd  FileType perl  inoremap <F5> <ESC>:update<CR>:RunPerl<CR>li
   autocmd  FileType perl  vnoremap <F5> <Esc>:update<CR>:RunPerl<CR>gv
@@ -253,11 +255,10 @@ if has("autocmd")
   autocmd FileType yaml inoremap ` <c-r>=TriggerSnippet()<cr>
   autocmd FileType yaml snoremap ~ <esc>i<right><c-r>=TriggerSnippet()<cr>
     
-  "au FileType perl source /usr/share/vim/vim74/ftplugin/perl_doc.vim
 
-  " When editing a file, always jump to the last known cursor position.  Don't
-  " do it when the position is invalid or when inside an event handler
-  " (happens when dropping a file on gvim).  Also don't do it when the mark is
+" When editing a file, always jump to the last known cursor position.  Don't
+" do it when the position is invalid or when inside an event handler
+" (happens when dropping a file on gvim).  Also don't do it when the mark is
   " in the first line, that is the default position when opening a file.
   autocmd BufReadPost * 
     \ if line("'\"") > 1 && line("'\"") <= line("$") | 
@@ -418,8 +419,11 @@ function! RunCmd(cmd)
 endfunction
 "=============================
 command! -nargs=1 Run     call RunCmd(<q-args>)
-command! RunPerl  call RunCmd("/home/rod/perl5/perlbrew/perls/perl-5.24.1/bin/perl -w")
-command! TestPerl call RunCmd("/home/rod/perl5/perlbrew/perls/perl-5.24.1/bin/perl -c -w")
+"command! RunPerl  call RunCmd("/home/rod/perl5/perlbrew/perls/perl-5.24.1/bin/perl -w")
+"command! TestPerl call RunCmd("/home/rod/perl5/perlbrew/perls/perl-5.24.1/bin/perl -c -w")
+
+command! RunPerl  call RunCmd("perl -w")
+command! TestPerl call RunCmd("perl -c -w")
 
 "Execute sheel commands, send output to a new vsplit window
 function! s:ExecuteInShell(command)
