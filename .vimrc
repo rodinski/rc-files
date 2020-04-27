@@ -187,7 +187,7 @@ vnoremap ;; :s:::g<Left><Left><Left>
 noremap <leader>ev :split $MYVIMRC<CR>
 noremap <leader>sv :source $MYVIMRC<CR>
 "global lines to new tab
-noremap <leader>gt <Esc>qaq:g//:y A<CR> :tabnew<CR>"Ap<CR>  
+noremap <leader>gt <Esc>qaq:g//:y A<CR> :tabnew<CR>"AP<CR>  
 
 " clear the search registar
 noremap <leader>c  :let @/ = ""<CR>     

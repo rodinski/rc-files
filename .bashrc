@@ -89,7 +89,6 @@ fi
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
-alias hg='history|grep $1'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
@@ -126,4 +125,6 @@ source ${PERLBREW_ROOT}/etc/bashrc
 ## Do stuff with 5.24.1
 perlbrew use 5.24.1
 
-source /home/rod/rc-files/bashrc_extra
+if [ -f ~/rc-files/bashrc_extra ]; then
+    source ~/rc-files/bashrc_extra
+fi
