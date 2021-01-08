@@ -252,8 +252,8 @@ noremap ;; :%s:::g<Left><Left><Left>
 vnoremap ;; :s:::g<Left><Left><Left>
 
 " remove trailing spaces and save location
-"noremap <Leader><Space><Space> <Esc>mm:%s: \+$::g<CR>'m
-noremap <Leader>ss <Esc><Esc>mm:%s: \+$::g<CR>'m
+"noremap <Leader><Space><Space> <Esc>ms:%s: \+$::g<CR>'s
+noremap <Leader>ss <Esc><Esc>ms:%s: \+$::g<CR>'s
 
 
 "edit or source the $MYVIMRC
@@ -343,8 +343,11 @@ if has("autocmd")
   autocmd FileType perl  setlocal sts=4 ts=4 sw=0 smartindent cindent
   autocmd FileType awk   setlocal sts=4 ts=4 sw=0 smartindent cindent
 
-  autocmd FileType python  noremap <F5> :w<CR>:RunPython<CR>
-  autocmd FileType python  noremap <F6> :w<CR>:!python  %<CR>
+
+  autocmd FileType python noremap <F5> :w<CR>:RunPython<CR>
+  autocmd FileType python noremap <F6> :w<CR>:!python  %<CR>
+  autocmd FileType python set foldmethod=indent 
+  autocmd FileType python nnoremap <space><space> za
 
   autocmd FileType perl  noremap <F5> :w<CR>:RunPerl<CR>
   autocmd FileType perl  noremap <F6> :w<CR>:TestPerl<CR>
@@ -656,3 +659,5 @@ nnoremap \sf  <Plug>SQLUFormater<CR>
 vnoremap \sfs <Plug>SQLUFormater<CR>
 nnoremap \sfs <Plug>SQLUFormater<CR>
 
+let g:Awk_Ctrl_j = 'no'
+let g:Awk_Ctrl_d = 'no'
