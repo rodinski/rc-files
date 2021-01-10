@@ -123,7 +123,7 @@ fi
 export PERLBREW_ROOT=/home/rod/perl5/perlbrew
 export PERLBREW_HOME=/tmp/.perlbrew
 source ${PERLBREW_ROOT}/etc/bashrc
-
 ## Do stuff with 5.24.1
 perlbrew use 5.24.1
 
+source /home/rod/rc-files/bashrc_extra
