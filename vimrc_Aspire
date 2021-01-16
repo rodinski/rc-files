@@ -490,6 +490,7 @@ command! -complete=shellcmd -nargs=+ Shellv call s:ExecuteInShell(<q-args>)
 let g:virtualenv_directory = '/home/rod/bin/mypython3/bin'
 let g:jedi#completions_enabled = 1
 let g:jedi#popup_on_dot = 1
+let g:jedi#show_call_signatures = "2"
 "let g:jedi#use_splits_notbuffers = "right"
 "
 "tiny change here 2021_01
